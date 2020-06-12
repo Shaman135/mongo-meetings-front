@@ -1,30 +1,90 @@
 import React from "react";
-import { Layout, Menu } from "antd";
-import { AuthProvider } from "./auth/auth-provider";
-import logo from "./assets/logo.png";
+import { Link, Router, Route } from "react-router-dom";
+import { Layout, Menu, Switch } from "antd";
+import { AuthProvider, useAuth } from "./auth/auth-provider";
+import { createBrowserHistory } from "history";
+import logo from "./assets/logo2.png";
 import "./App.css";
+import Home from "./pages/Home";
+import Particles from "react-particles-js";
+import { AuthActionType } from "./models/auth-models";
+import RegisterForm from "./components/RegisterForm";
 
 const { Header, Content } = Layout;
 
-const App = () => (
-  <AuthProvider>
-    <Layout>
-      <Header>
-        <div className="logo">
-          <a href="/">
-            <img src={logo} alt="logo" height="28px" width="auto" />
-          </a>
-        </div>
-        <Menu theme="dark" mode="horizontal" style={{ float: "right" }} defaultSelectedKeys={["2"]}>
-          <Menu.Item key="1">Rejestracja</Menu.Item>
-          <Menu.Item key="2">Logowanie</Menu.Item>
-        </Menu>
-      </Header>
-      <Content style={{ padding: "0 50px" }}>
-        <div className="site-layout-content">Content</div>
-      </Content>
-    </Layout>
-  </AuthProvider>
-);
+const App = () => {
+  const history = createBrowserHistory();
+  const { state, dispatch } = useAuth();
+  const [modalVisible, setModalVisible] = React.useState(false);
+
+  const onLoad = () => {
+    document.title = "MongoMeetings"
+    dispatch({ type: AuthActionType.INITIALIZE });
+  };
+
+  React.useEffect(() => {
+    onLoad();
+  }, []);
+
+  return (
+    <Router history={history}>
+      {/* <Particles
+        params={{
+          particles: {
+            number: {
+              value: 150,
+            },
+            size: {
+              value: 3,
+            },
+          },
+          interactivity: {
+            events: {
+              onhover: {
+                enable: true,
+                mode: "grab",
+              },
+            },
+          },
+        }}
+        style={{
+          position: "absolute",
+          backgroundColor: "#577984",
+        }}
+      /> */}
+      <Layout>
+        <Header style={{ zIndex: 100 }}>
+          <Link to="#">
+            <div className="logo">
+              <img
+                src={logo}
+                alt="logo"
+                height="42px"
+                width="auto"
+                style={{ marginTop: "-6px" }}
+              />
+            </div>
+          </Link>
+          <Menu theme="dark" mode="horizontal" style={{ float: "right" }}>
+            {state.ready && state.isAuthenticated ? (
+              <Menu.Item
+                key="logout"
+                onClick={() => dispatch({ type: AuthActionType.LOGOUT })}
+              >
+                Wyloguj
+              </Menu.Item>
+            ) : (
+              <Menu.Item key="register" onClick={() => setModalVisible(!modalVisible)}>Rejestracja</Menu.Item>
+            )}
+          </Menu>
+        </Header>
+        <Content style={{ padding: "0 50px" }}>
+          <RegisterForm visible={modalVisible} updateVisible={setModalVisible}/>
+          <Route exact path="/" component={Home} />
+        </Content>
+      </Layout>
+    </Router>
+  );
+};
 
 export default App;
