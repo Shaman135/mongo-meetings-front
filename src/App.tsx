@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, Router, Route } from "react-router-dom";
-import { Layout, Menu, Switch } from "antd";
-import { AuthProvider, useAuth } from "./auth/auth-provider";
+import { Layout, Menu } from "antd";
+import { useAuth } from "./auth/auth-provider";
 import { createBrowserHistory } from "history";
 import logo from "./assets/logo2.png";
 import "./App.css";
@@ -28,7 +28,7 @@ const App = () => {
 
   return (
     <Router history={history}>
-      {/* <Particles
+      <Particles
         params={{
           particles: {
             number: {
@@ -48,10 +48,10 @@ const App = () => {
           },
         }}
         style={{
-          position: "absolute",
+          position: "fixed",
           backgroundColor: "#577984",
         }}
-      /> */}
+      />
       <Layout>
         <Header style={{ zIndex: 100 }}>
           <Link to="#">
@@ -71,7 +71,7 @@ const App = () => {
                 key="logout"
                 onClick={() => dispatch({ type: AuthActionType.LOGOUT })}
               >
-                Wyloguj
+                Wyloguj, {`${state.user?.first_name} ${state.user?.last_name}`}
               </Menu.Item>
             ) : (
               <Menu.Item key="register" onClick={() => setModalVisible(!modalVisible)}>Rejestracja</Menu.Item>
