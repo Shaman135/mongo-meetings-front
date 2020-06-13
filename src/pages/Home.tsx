@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../auth/auth-provider";
-import { Card, Skeleton, Button, message, Spin } from "antd";
+import { Card, Skeleton, Button, message } from "antd";
 import LoginForm from "../components/LoginForm";
 import EventCalendar from "../components/EventCalendar";
 import EventFormModal from "../components/EventFormModal";
@@ -31,7 +31,8 @@ const Home = () => {
 
   const updateEvent = (e: any) => {
     const toUpdate = events.findIndex((event) => event.id === e.event.id);
-    if (toUpdate) {
+    console.log(events[toUpdate]);
+    if (toUpdate !== -1) {
       axios
         .put(`${eventsUrl}/${events[toUpdate].id}`, {
           ...events[toUpdate],
